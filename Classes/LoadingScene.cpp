@@ -28,12 +28,8 @@ bool Loading::init()
 	auto bg = TMXTiledMap::create("map/red_bg.tmx");
 	this->addChild(bg);
 
-	auto logo = Sprite::createWithSpriteFrameName("logo.png");
-	logo->setPosition(Vec2(visibleSize.width / 2, visibleSize.height / 2));
-	this->addChild(logo);
-
 	auto sprite = Sprite::createWithSpriteFrameName("loding4.png");
-	sprite->setPosition(logo->getPosition() - Vec2(0, logo->getContentSize().height / 2 + 30));
+	sprite->setPosition(Vec2(visibleSize.width / 2, visibleSize.height / 2));
 	this->addChild(sprite);
 
 	// Loading动画开始
@@ -62,9 +58,6 @@ bool Loading::init()
 		CC_CALLBACK_1(Loading::loadingTextureCallback, this));
 	Director::getInstance()->getTextureCache()->addImageAsync("texture/gameplay_texture.png",
 		CC_CALLBACK_1(Loading::loadingTextureCallback, this));
-	
-	// 创建一个线程
-	_loadingAudioThread = new std::thread(&Loading::loadingAudio, this);
 
     return true;
 }
@@ -90,25 +83,13 @@ void Loading::loadingTextureCallback(Texture2D * texture)
 // 延时调用函数
 void Loading::delayCall(float dt)
 {
-	
-}
-
-// 预处理声音
-void Loading::loadingAudio()
-{
-	SimpleAudioEngine::getInstance()->preloadBackgroundMusic(bg_music_1);
-	SimpleAudioEngine::getInstance()->preloadBackgroundMusic(bg_music_2);
+	auto scene = HomeMenuLayer::createScene();
+	Director::getInstance()->replaceScene(scene);
 }
 
 void Loading::onExit()
 {
 	Layer::onExit();
-	
-	// 合并子线程到主线程
-	_loadingAudioThread->join();
-
-	// 释放变量内存
-	CC_SAFE_DELETE(_loadingAudioThread);
 
 	// 清除Loading场景精灵帧缓存和纹理缓存
 	SpriteFrameCache::getInstance()->removeSpriteFramesFromFile("texture/loading_texture.plist");

@@ -74,6 +74,9 @@ bool AppDelegate::applicationDidFinishLaunching() {
 
     director->runWithScene(scene);
 
+	SimpleAudioEngine::getInstance()->preloadBackgroundMusic(bg_music_1);
+	SimpleAudioEngine::getInstance()->preloadBackgroundMusic(bg_music_2);
+
     return true;
 }
 
