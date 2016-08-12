@@ -33,7 +33,65 @@ bool HomeMenuLayer::init()
 	end->setPosition(Vec2(visibleSize.width / 2, end->getContentSize().height / 2));
 	this->addChild(end);
 
+	// 开始菜单
+	auto startSpriteNormal = Sprite::createWithSpriteFrameName("home.button.start.png");
+	auto startSpriteSelected = Sprite::createWithSpriteFrameName("home.button.start-on.png");
+	auto startMenuItem = MenuItemSprite::create(startSpriteNormal, startSpriteSelected,
+		CC_CALLBACK_1(HomeMenuLayer::menuItemCallback, this));
+	startMenuItem->setTag(ActionType::MenuItemStart);
+
+	// 设置菜单
+	auto settingSpriteNormal = Sprite::createWithSpriteFrameName("home.button.setting.png");
+	auto settingSpriteSelected = Sprite::createWithSpriteFrameName("home.button.setting-on.png");
+	auto settingMenuItem = MenuItemSprite::create(settingSpriteNormal, settingSpriteSelected,
+		CC_CALLBACK_1(HomeMenuLayer::menuItemCallback, this));
+	settingMenuItem->setTag(ActionType::MenuItemSetting);
+
+	// 帮助菜单
+	auto helpSpriteNormal = Sprite::createWithSpriteFrameName("home.button.help.png");
+	auto helpSpriteSelected = Sprite::createWithSpriteFrameName("home.button.help-on.png");
+	auto helpMenuItem = MenuItemSprite::create(helpSpriteNormal, helpSpriteSelected,
+		CC_CALLBACK_1(HomeMenuLayer::menuItemCallback, this));
+	helpMenuItem->setTag(ActionType::MenuItemHelp);
+
+	auto menu = Menu::create(startMenuItem, settingMenuItem, helpMenuItem, NULL);
+	menu->setPosition(visibleSize.width / 2, visibleSize.height / 2);
+	menu->alignItemsHorizontallyWithPadding(12);
+	this->addChild(menu);
+
 	return true;
+}
+
+void HomeMenuLayer::menuItemCallback(Ref* pSender)
+{
+	if (UserDefault::getInstance()->getBoolForKey(SOUND_KEY))
+	{
+		SimpleAudioEngine::getInstance()->playEffect(sound_1);
+	}
+
+	Scene * scene = nullptr;
+
+	MenuItem * menuItem = (MenuItem*)pSender;
+
+	switch (menuItem->getTag())
+	{
+	case ActionType::MenuItemStart:
+		log("StartCallback");
+		break;
+	case ActionType::MenuItemSetting:
+		log("SettingCallback");
+		break;
+	case ActionType::MenuItemHelp:
+		log("HelpCallback");
+		break;
+	default:
+		break;
+	}
+
+	if (scene)
+	{
+		Director::getInstance()->pushScene(scene);
+	}
 }
 
 void HomeMenuLayer::onEnterTransitionDidFinish()
@@ -46,7 +104,7 @@ void HomeMenuLayer::onEnterTransitionDidFinish()
 	UserDefault * defaults = UserDefault::getInstance();
 	if (defaults->getBoolForKey(MUSIC_KEY))
 	{
-		log("ok");
+		log("HomeMenuLayer onEnterTransitionDidFinish");
 		SimpleAudioEngine::getInstance()->playBackgroundMusic(bg_music_1, true);
 	}
 }

@@ -4,6 +4,13 @@
 #include "cocos2d.h"
 #include "SystemHeader.h"
 
+typedef enum
+{
+	MenuItemStart,
+	MenuItemSetting,
+	MenuItemHelp
+}ActionType;
+
 class HomeMenuLayer :public cocos2d::Layer
 {
 public:
