@@ -27,6 +27,9 @@
     <ClCompile Include="..\Classes\HomeScene.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="..\Classes\SettingScene.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -45,6 +48,9 @@
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\HomeScene.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\SettingScene.h">
       <Filter>src</Filter>
     </ClInclude>
   </ItemGroup>

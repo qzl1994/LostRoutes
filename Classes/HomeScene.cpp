@@ -56,7 +56,7 @@ bool HomeMenuLayer::init()
 
 	auto menu = Menu::create(startMenuItem, settingMenuItem, helpMenuItem, NULL);
 	menu->setPosition(visibleSize.width / 2, visibleSize.height / 2);
-	menu->alignItemsHorizontallyWithPadding(12);
+	menu->alignItemsVerticallyWithPadding(12);
 	this->addChild(menu);
 
 	return true;
@@ -80,6 +80,7 @@ void HomeMenuLayer::menuItemCallback(Ref* pSender)
 		break;
 	case ActionType::MenuItemSetting:
 		log("SettingCallback");
+		scene = TransitionFade::create(1.0f, SettingLayer::createScene());
 		break;
 	case ActionType::MenuItemHelp:
 		log("HelpCallback");

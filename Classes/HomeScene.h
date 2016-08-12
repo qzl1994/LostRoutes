@@ -3,6 +3,7 @@
 
 #include "cocos2d.h"
 #include "SystemHeader.h"
+#include "SettingScene.h"
 
 typedef enum
 {
