@@ -9,7 +9,7 @@ bool BaseLayer::init()
 		return false;
 	}
 
-	Size visibleSize = Director::getInstance()->getVisibleSize;
+	Size visibleSize = Director::getInstance()->getVisibleSize();
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
 	auto bg = TMXTiledMap::create("map/red_bg.tmx");
