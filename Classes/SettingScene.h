@@ -3,6 +3,8 @@
 
 #include "cocos2d.h"
 #include "BaseLayer.h"
+#include "MyUtility.h"
+#include "SystemHeader.h"
 
 class SettingLayer : public BaseLayer
 {
