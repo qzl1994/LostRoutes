@@ -454,8 +454,25 @@ void GamePlayLayer::updateStatusBarFighter()
 	this->addChild(lblLife, 20, GameSceneNodeTagStatusBarLifeNode);
 }
 
-
+// 玩家得分情况显示
 void GamePlayLayer::updateStatusBarScore()
 {
+	Size visibleSize = Director::getInstance()->getVisibleSize();
 
+	// 移除上次的精灵
+	Node * node = this->getChildByTag(GameSceneNodeTagStatusBarScore);
+	if (node)
+	{
+		this->removeChildByTag(GameSceneNodeTagStatusBarScore);
+	}
+	// 分数不为负
+	if (this->score < 0)
+	{
+		this->score = 0;
+	}
+
+	__String * score = __String::createWithFormat("%d", this->score);
+	auto lblScore = Label::createWithTTF(score->getCString(), "fonts/hanyi.ttf", 18);
+	lblScore->setPosition(Vec2(visibleSize.width / 2, visibleSize.height - 28));
+	this->addChild(lblScore, 20, GameSceneNodeTagStatusBarScore);
 }
