@@ -20,6 +20,7 @@
 #include "Enemy.h"
 #include "Fighter.h"
 #include "Bullet.h"
+#include "GameOverScene.h"
 
 #include "SystemHeader.h"
 

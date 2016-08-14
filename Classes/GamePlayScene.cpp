@@ -406,10 +406,13 @@ void GamePlayLayer::handleFighterCollidingWithEnemy(Enemy* enemy)
 	{
 		log("GameOver");
 
+		auto gameOverLayer = GameOverLayer::createWithScore(score);
+		auto gameOverScene = Scene::create();
+		gameOverScene->addChild(gameOverLayer);
 
+		auto tsc = TransitionFade::create(1.0f, gameOverScene);
 
-
-
+		Director::getInstance()->pushScene(tsc);
 	}
 	else{	// 碰撞未死，重设飞机位置和动作效果
 		fighter->setPosition(Vec2(visibleSize.width / 2, 70));
