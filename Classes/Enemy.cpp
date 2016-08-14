@@ -13,31 +13,31 @@ Enemy* Enemy::createWithEnemyTypes(EnemyTypes enemyType)
 {
 	Enemy * enemy = new Enemy(enemyType);
 
-	const char * enemyFramName = Enemy_Stone;
+	const char * enemyFrameName = Enemy_Stone;
 
 	switch (enemyType)
 	{
 	case EnemyTypeStone:
-		enemyFramName = Enemy_Stone;
+		enemyFrameName = Enemy_Stone;
 		enemy->initialHitPoints = 3;
 		break;
 	case EnemyTypeEnemy1:
-		enemyFramName = Enemy_1;
+		enemyFrameName = Enemy_1;
 		enemy->initialHitPoints = 5;
 		break;
 	case EnemyTypeEnemy2:
-		enemyFramName = Enemy_2;
+		enemyFrameName = Enemy_2;
 		enemy->initialHitPoints = 10;
 		break;
 	case EnemyTypePlanet:
-		enemyFramName = Enemy_Planet;
+		enemyFrameName = Enemy_Planet;
 		enemy->initialHitPoints = 15;
 		break;
 	default:
 		break;
 	}
 
-	if (enemy && enemy->initWithSpriteFrameName(enemyFramName))
+	if (enemy && enemy->initWithSpriteFrameName(enemyFrameName))
 	{
 		// 将敌人对象放入内存释放池中
 		enemy->autorelease();
