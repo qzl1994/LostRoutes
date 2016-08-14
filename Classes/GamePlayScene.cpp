@@ -71,6 +71,13 @@ void GamePlayLayer::onEnter()
 
 	Size visibleSize = Director::getInstance()->getVisibleSize();
 
+	// 初始化暂停按钮
+	auto pauseSprite = Sprite::createWithSpriteFrameName("gameplay.button.pause.png");
+	auto pauseMenuItem = MenuItemSprite::create(pauseSprite, pauseSprite, CC_CALLBACK_1(GamePlayLayer::menuPauseCallback, this));
+	auto pauseMenu = Menu::create(pauseMenuItem, NULL);
+	pauseMenu->setPosition(Vec2(30, visibleSize.height - 28));
+	this->addChild(pauseMenu, 20, 999);
+
 	// 添加陨石1
 	auto stone1 = Enemy::createWithEnemyTypes(EnemyTypeStone);
 	stone1->setVelocity(Vec2(0, -100));
@@ -117,6 +124,22 @@ void GamePlayLayer::onEnter()
 	EventDispatcher * eventDispatcher = Director::getInstance()->getEventDispatcher();
 	eventDispatcher->addEventListenerWithSceneGraphPriority(touchFighterListener, this->fighter);
 
+
+
+	
+
+}
+
+void GamePlayLayer::onEnterTransitionDidFinish()
+{
+	Layer::onEnterTransitionDidFinish();
+
+	UserDefault * defaults = UserDefault::getInstance();
+
+	if (defaults->getBoolForKey(MUSIC_KEY))
+	{
+		SimpleAudioEngine::getInstance()->playBackgroundMusic(bg_music_2, true);
+	}
 }
 
 void GamePlayLayer::onExit()
@@ -136,4 +159,73 @@ void GamePlayLayer::onExit()
 			this->removeChild(node);
 		}
 	}
+}
+
+void GamePlayLayer::menuPauseCallback(Ref* pSender)
+{
+	log("menuPauseCallback");
+
+	Size visibleSize = Director::getInstance()->getVisibleSize();
+
+	if (UserDefault::getInstance()->getBoolForKey(SOUND_KEY))
+	{
+		SimpleAudioEngine::getInstance()->playEffect(sound_1);
+	}
+
+	// 暂停当前层中的node
+	this->pause();
+
+	for (const auto& node : this->getChildren())
+	{
+		node->pause();
+	}
+
+	// 返回主菜单
+	auto backNormal = Sprite::createWithSpriteFrameName("gameplay.button.back.png");
+	auto backSelected = Sprite::createWithSpriteFrameName("gameplay.button.back-on.png");
+	auto backMenuItem = MenuItemSprite::create(backNormal, backSelected,
+		CC_CALLBACK_1(GamePlayLayer::menuBackCallback, this));
+
+	// 继续游戏
+	auto resumeNormal = Sprite::createWithSpriteFrameName("gameplay.button.resume.png");
+	auto resumeSelected = Sprite::createWithSpriteFrameName("gameplay.button.resume-on.png");
+	auto resumeMenuItem = MenuItemSprite::create(resumeNormal, resumeSelected,
+		CC_CALLBACK_1(GamePlayLayer::menuResumeCallback, this));
+
+	menu = Menu::create(backMenuItem, resumeMenuItem, NULL);
+	menu->alignItemsVertically();
+	menu->setPosition(Vec2(visibleSize.width / 2, visibleSize.height / 2));
+
+	addChild(menu, 20, 1000);
+}
+
+void GamePlayLayer::menuBackCallback(Ref* pSender)
+{
+	log("menuBackCallback");
+
+	Director::getInstance()->popScene();
+
+	if (UserDefault::getInstance()->getBoolForKey(SOUND_KEY))
+	{
+		SimpleAudioEngine::getInstance()->playEffect(sound_1);
+	}
+}
+
+void GamePlayLayer::menuResumeCallback(Ref* pSender)
+{
+	log("menuResumeCallback");
+
+	if (UserDefault::getInstance()->getBoolForKey(SOUND_KEY))
+	{
+		SimpleAudioEngine::getInstance()->playEffect(sound_1);
+	}
+
+	this->resume();
+
+	for (const auto& node : this->getChildren())
+	{
+		node->resume();
+	}
+
+	this->removeChild(menu);
 }

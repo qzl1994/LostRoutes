@@ -20,8 +20,8 @@
 class GamePlayLayer : public cocos2d::Layer
 {
 private:
-
 	Fighter * fighter;
+	cocos2d::Menu* menu;
 
 	cocos2d::EventListenerTouchOneByOne * touchFighterListener;
 
@@ -33,10 +33,14 @@ public:
 
 	virtual void onEnter();
 	virtual void onExit();
-	//virtual void onEnterTransitionDidFinish();
+	virtual void onEnterTransitionDidFinish();
 
 	// ≥ı ºªØ±≥æ∞
 	void initBG();
+
+	void menuPauseCallback(cocos2d::Ref* pSender);
+	void menuBackCallback(cocos2d::Ref* pSender);
+	void menuResumeCallback(cocos2d::Ref* pSender);
 
 	CREATE_FUNC(GamePlayLayer);
 };
