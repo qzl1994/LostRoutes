@@ -5,10 +5,12 @@
 #define GameSceneNodeBatchTagBackground				800
 #define GameSceneNodeTagFighter						900
 
+#define GameSceneNodeBatchTagBullet					902
 #define GameSceneNodeBatchTagEnemy					903
 
 
-
+//发射炮弹的速度
+#define GameSceneBulletVelocity						300
 
 #include "cocos2d.h"
 #include "Enemy.h"
@@ -37,6 +39,8 @@ public:
 
 	// 初始化背景
 	void initBG();
+	// 发射炮弹
+	void shootBullet(float dt);
 
 	void menuPauseCallback(cocos2d::Ref* pSender);
 	void menuBackCallback(cocos2d::Ref* pSender);

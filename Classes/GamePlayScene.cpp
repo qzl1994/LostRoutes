@@ -126,7 +126,8 @@ void GamePlayLayer::onEnter()
 
 
 
-	
+	// 每0.2秒发射一个炮弹
+	this->schedule(schedule_selector(GamePlayLayer::shootBullet), 0.2f);
 
 }
 
@@ -161,6 +162,7 @@ void GamePlayLayer::onExit()
 	}
 }
 
+// 暂停游戏
 void GamePlayLayer::menuPauseCallback(Ref* pSender)
 {
 	log("menuPauseCallback");
@@ -196,9 +198,10 @@ void GamePlayLayer::menuPauseCallback(Ref* pSender)
 	menu->alignItemsVertically();
 	menu->setPosition(Vec2(visibleSize.width / 2, visibleSize.height / 2));
 
-	addChild(menu, 20, 1000);
+	this->addChild(menu, 20, 1000);
 }
 
+// 返回主菜单
 void GamePlayLayer::menuBackCallback(Ref* pSender)
 {
 	log("menuBackCallback");
@@ -211,6 +214,7 @@ void GamePlayLayer::menuBackCallback(Ref* pSender)
 	}
 }
 
+// 返回游戏
 void GamePlayLayer::menuResumeCallback(Ref* pSender)
 {
 	log("menuResumeCallback");
@@ -228,4 +232,16 @@ void GamePlayLayer::menuResumeCallback(Ref* pSender)
 	}
 
 	this->removeChild(menu);
+}
+
+// 发射炮弹
+void GamePlayLayer::shootBullet(float dt)
+{
+	if (fighter && fighter->isVisible())
+	{
+		Bullet * bullet = Bullet::createWithSpriteFrameName("gameplay.bullet.png");
+		bullet->setVelocity(Vec2(0, GameSceneBulletVelocity));
+		this->addChild(bullet, 0, GameSceneNodeBatchTagBullet);
+		bullet->shootBulletFromFighter(fighter);
+	}
 }
