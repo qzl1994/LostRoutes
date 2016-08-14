@@ -80,7 +80,7 @@ void Loading::loadingTextureCallback(Texture2D * texture)
 	}
 }
 
-// 延时调用函数
+// 延时调用函数,进入主菜单
 void Loading::delayCall(float dt)
 {
 	auto scene = HomeMenuLayer::createScene();

@@ -33,6 +33,9 @@
     <ClCompile Include="..\Classes\MyUtility.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="..\Classes\HelpScene.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -57,6 +60,9 @@
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\MyUtility.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\HelpScene.h">
       <Filter>src</Filter>
     </ClInclude>
   </ItemGroup>

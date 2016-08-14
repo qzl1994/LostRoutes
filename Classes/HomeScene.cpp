@@ -84,6 +84,7 @@ void HomeMenuLayer::menuItemCallback(Ref* pSender)
 		break;
 	case ActionType::MenuItemHelp:
 		log("HelpCallback");
+		scene = TransitionFade::create(1.0f, HelpLayer::createScene());
 		break;
 	default:
 		break;

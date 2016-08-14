@@ -4,6 +4,7 @@
 #include "cocos2d.h"
 #include "SystemHeader.h"
 #include "SettingScene.h"
+#include "HelpScene.h"
 
 typedef enum
 {
