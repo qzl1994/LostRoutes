@@ -1,6 +1,9 @@
 #ifndef __GAME_PLAY_SCENE_H__
 #define __GAME_PLAY_SCENE_H__
 
+#define GameSceneNodeTagStatusBarFighterNode		301
+#define GameSceneNodeTagStatusBarLifeNode			302
+#define GameSceneNodeTagStatusBarScore				303
 
 #define GameSceneNodeBatchTagBackground				800
 #define GameSceneNodeTagFighter						900
@@ -8,9 +11,10 @@
 #define GameSceneNodeBatchTagBullet					902
 #define GameSceneNodeBatchTagEnemy					903
 
-
-//发射炮弹的速度
+// 发射炮弹的速度
 #define GameSceneBulletVelocity						300
+// 初始玩家生命值
+#define GameSceneFighterLife                        5
 
 #include "cocos2d.h"
 #include "Enemy.h"

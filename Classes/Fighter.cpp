@@ -43,7 +43,7 @@ Fighter * Fighter::createWithSpriteFrameName(const char * spriteFrameName)
 	return NULL;
 }
 
-// 重新设置飞机位置
+// 重写设置飞机位置
 void Fighter::setPosition(const cocos2d::Vec2& newPosition)
 {
 	Size screenSize = Director::getInstance()->getVisibleSize();

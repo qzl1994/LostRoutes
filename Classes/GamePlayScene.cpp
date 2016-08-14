@@ -101,7 +101,7 @@ void GamePlayLayer::onEnter()
 
 	// 玩家飞机
 	this->fighter = Fighter::createWithSpriteFrameName("gameplay.fighter.png");
-	this->fighter->setHitPoints(5);
+	this->fighter->setHitPoints(GameSceneFighterLife);
 	this->fighter->setPosition(Vec2(visibleSize.width / 2, 70));
 	this->addChild(this->fighter, 10, GameSceneNodeTagFighter);
 
@@ -190,7 +190,10 @@ void GamePlayLayer::onEnter()
 	this->score = 0;
 	this->scorePlaceholder = 0;
 
-
+	//在状态栏中设置玩家的生命值
+	this->updateStatusBarFighter();
+	//在状态栏中显示得分
+	this->updateStatusBarScore();
 }
 
 void GamePlayLayer::onEnterTransitionDidFinish()
@@ -360,11 +363,11 @@ void GamePlayLayer::handleBulletCollidingWithEnemy(Enemy* enemy)
 		if (scorePlaceholder >= 1000)
 		{
 			fighter->setHitPoints(fighter->getHitPoints() + 1);
-			
+			this->updateStatusBarFighter();
 			scorePlaceholder -= 1000;
 		}
 
-		
+		this->updateStatusBarScore();
 		// 敌人消失
 		enemy->setVisible(false);
 		enemy->spawn();
@@ -396,7 +399,7 @@ void GamePlayLayer::handleFighterCollidingWithEnemy(Enemy* enemy)
 
 	// 玩家生命值减1
 	fighter->setHitPoints(fighter->getHitPoints() - 1);
-	
+	this->updateStatusBarFighter();
 
 	// 死亡，游戏结束
 	if (fighter->getHitPoints() <= 0)
@@ -415,4 +418,44 @@ void GamePlayLayer::handleFighterCollidingWithEnemy(Enemy* enemy)
 		auto seq = Sequence::create(ac1, ac2, NULL);
 		fighter->runAction(seq);
 	}
+}
+
+//	玩家飞机生命值显示
+void GamePlayLayer::updateStatusBarFighter()
+{
+	Size visibleSize = Director::getInstance()->getVisibleSize();
+
+	// 移除上次的精灵
+	Node * node1 = this->getChildByTag(GameSceneNodeTagStatusBarFighterNode);
+	if (node1)
+	{
+		this->removeChildByTag(GameSceneNodeTagStatusBarFighterNode);
+	}
+
+	Sprite * fg = Sprite::createWithSpriteFrameName("gameplay.life.png");
+	fg->setPosition(Vec2(visibleSize.width - 60, visibleSize.height - 28));
+	this->addChild(fg, 20, GameSceneNodeTagStatusBarFighterNode);
+
+	// 添加生命值
+	Node * node2 = this->getChildByTag(GameSceneNodeTagStatusBarLifeNode);
+	if (node2)
+	{
+		this->removeChildByTag(GameSceneNodeTagStatusBarLifeNode);
+	}
+
+	if (this->fighter->getHitPoints() < 0)
+	{
+		this->fighter->setHitPoints(0);
+	}
+
+	__String * life = __String::createWithFormat("x%d", this->fighter->getHitPoints());
+	auto lblLife = Label::createWithTTF(life->getCString(), "fonts/hanyi.ttf", 18);
+	lblLife->setPosition(fg->getPosition() + Vec2(30, 0));
+	this->addChild(lblLife, 20, GameSceneNodeTagStatusBarLifeNode);
+}
+
+
+void GamePlayLayer::updateStatusBarScore()
+{
+
 }
