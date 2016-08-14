@@ -5,6 +5,7 @@
 #include "SystemHeader.h"
 #include "SettingScene.h"
 #include "HelpScene.h"
+#include "GamePlayScene.h"
 
 typedef enum
 {

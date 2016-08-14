@@ -77,6 +77,7 @@ void HomeMenuLayer::menuItemCallback(Ref* pSender)
 	{
 	case ActionType::MenuItemStart:
 		log("StartCallback");
+		scene = TransitionFade::create(1.0f, GamePlayLayer::createScene());
 		break;
 	case ActionType::MenuItemSetting:
 		log("SettingCallback");
