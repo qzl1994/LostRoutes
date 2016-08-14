@@ -4,7 +4,7 @@
 
 #define GameSceneNodeBatchTagBackground				800
 #define GameSceneNodeTagFighter						900
-
+#define GameSceneNodeTagExplosionParticleSystem		901
 #define GameSceneNodeBatchTagBullet					902
 #define GameSceneNodeBatchTagEnemy					903
 
@@ -19,14 +19,26 @@
 
 #include "SystemHeader.h"
 
+// 敌人被击毁时获得的分数
+typedef enum
+{
+	EnemyStone_Score = 5,
+	Enemy1_Score = 10,
+	Enemy2_Score = 15,
+	EnemyPlanet_Score = 20
+}EnemyScores;
+
 class GamePlayLayer : public cocos2d::Layer
 {
 private:
 	Fighter * fighter;
 	cocos2d::Menu* menu;
 
-	cocos2d::EventListenerTouchOneByOne * touchFighterListener;
+	int score;				// 分数
+	int scorePlaceholder;	// 记录0~999分数
 
+	cocos2d::EventListenerTouchOneByOne * touchFighterListener;
+	cocos2d::EventListenerPhysicsContact * contactListener;
 
 public:
 	static cocos2d::Scene* createScene();
@@ -45,6 +57,9 @@ public:
 	void menuPauseCallback(cocos2d::Ref* pSender);
 	void menuBackCallback(cocos2d::Ref* pSender);
 	void menuResumeCallback(cocos2d::Ref* pSender);
+
+	//处理炮弹与敌人的碰撞检测
+	void handleBulletCollidingWithEnemy(Enemy* enemy);
 
 	CREATE_FUNC(GamePlayLayer);
 };

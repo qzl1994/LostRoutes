@@ -118,6 +118,7 @@ void Enemy::update(float dt)
 	}
 }
 
+// 重新生成敌人
 void Enemy::spawn()
 {
 	Size screenSize = Director::getInstance()->getVisibleSize();

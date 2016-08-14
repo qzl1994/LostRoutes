@@ -31,6 +31,7 @@ bool GamePlayLayer::init()
 	return true;
 }
 
+// 初始化背景
 void GamePlayLayer::initBG()
 {
 	Size visibleSize = Director::getInstance()->getVisibleSize();
@@ -124,10 +125,62 @@ void GamePlayLayer::onEnter()
 	EventDispatcher * eventDispatcher = Director::getInstance()->getEventDispatcher();
 	eventDispatcher->addEventListenerWithSceneGraphPriority(touchFighterListener, this->fighter);
 
+	// 注册接触事件监听器
+	contactListener = EventListenerPhysicsContact::create();
 
+	// 接触事件
+	contactListener->onContactBegin = [this](PhysicsContact& contact)
+	{
+		auto spriteA = contact.getShapeA()->getBody()->getNode();
+		auto spriteB = contact.getShapeB()->getBody()->getNode();
+
+		////////////////////////////检测 飞机与敌人的接触 start//////////////////////////////////
+		Node * enemy1 = nullptr;
+
+
+		////////////////////////////检测 飞机与敌人的接触 end//////////////////////////////////
+
+
+		////////////////////////////检测 炮弹与敌人的接触 start////////////////////////////////
+		Node * enemy2 = nullptr;
+		if (spriteA->getTag() == GameSceneNodeBatchTagBullet && spriteB->getTag() == GameSceneNodeBatchTagEnemy)
+		{
+			if (!spriteA->isVisible())
+			{
+				return false;
+			}
+			spriteA->setVisible(false);
+			enemy2 = spriteB;
+		}
+		if (spriteA->getTag() == GameSceneNodeBatchTagEnemy && spriteB->getTag() == GameSceneNodeBatchTagBullet)
+		{
+			if (!spriteB->isVisible())
+			{
+				return false;
+			}
+			spriteB->setVisible(false);
+			enemy2 = spriteA;
+		}
+		// 发生碰撞
+		if (enemy2 != nullptr)
+		{
+			this->handleBulletCollidingWithEnemy((Enemy*)enemy2);
+			return false;
+		}
+		////////////////////////////检测 炮弹与敌人的接触 end////////////////////////////////
+
+		return false;
+	};
+
+	// 添加接触事件监听器
+	eventDispatcher->addEventListenerWithFixedPriority(contactListener, 1);
 
 	// 每0.2秒发射一个炮弹
 	this->schedule(schedule_selector(GamePlayLayer::shootBullet), 0.2f);
+
+	// 设置初始分数
+	this->score = 0;
+	this->scorePlaceholder = 0;
 
 }
 
@@ -147,9 +200,12 @@ void GamePlayLayer::onExit()
 {
 	Layer::onExit();
 
+	// 停止定时器
+	this->unschedule(schedule_selector(GamePlayLayer::shootBullet));
 
 	// 注销事件监听器
 	Director::getInstance()->getEventDispatcher()->removeEventListener(touchFighterListener);
+	Director::getInstance()->getEventDispatcher()->removeEventListener(contactListener);
 
 	// 循环遍历Node元素，移除不是背景标签的Node元素
 	auto nodes = this->getChildren();
@@ -243,5 +299,63 @@ void GamePlayLayer::shootBullet(float dt)
 		bullet->setVelocity(Vec2(0, GameSceneBulletVelocity));
 		this->addChild(bullet, 0, GameSceneNodeBatchTagBullet);
 		bullet->shootBulletFromFighter(fighter);
+	}
+}
+
+// 处理炮弹与敌人碰撞
+void GamePlayLayer::handleBulletCollidingWithEnemy(Enemy* enemy)
+{
+	// 敌人生命值减1
+	enemy->setHitPoints(enemy->getHitPoints() - 1);
+
+	if (enemy->getHitPoints() <= 0)
+	{
+		// 敌人被击毁时爆炸音效和粒子效果
+		Node * node = this->getChildByTag(GameSceneNodeTagExplosionParticleSystem);
+		if (node)
+		{
+			this->removeChild(node);
+		}
+		ParticleSystem * explosion = ParticleSystemQuad::create("particle/explosion.plist");
+		explosion->setPosition(enemy->getPosition());
+		this->addChild(explosion, 2, GameSceneNodeTagExplosionParticleSystem);
+		if (UserDefault::getInstance()->getBoolForKey(SOUND_KEY))
+		{
+			SimpleAudioEngine::getInstance()->playEffect(sound_2);
+		}
+
+		// 根据击毁敌人增加分数
+		switch (enemy->getEnemyType())
+		{
+		case EnemyTypeStone:
+			score += EnemyStone_Score;
+			scorePlaceholder += EnemyStone_Score;
+			break;
+		case EnemyTypeEnemy1:
+			score += Enemy1_Score;
+			scorePlaceholder += Enemy1_Score;
+			break;
+		case EnemyTypeEnemy2:
+			score += Enemy2_Score;
+			scorePlaceholder += Enemy2_Score;
+			break;
+		case EnemyTypePlanet:
+			score += EnemyPlanet_Score;
+			scorePlaceholder += EnemyPlanet_Score;
+			break;
+		default:
+			break;
+		}
+
+		// 获得1000分，生命值加1
+		if (scorePlaceholder >= 1000)
+		{
+			fighter->setHitPoints(fighter->getHitPoints() + 1);
+			scorePlaceholder -= 1000;
+		}
+
+
+		enemy->setVisible(false);
+		enemy->spawn();
 	}
 }
