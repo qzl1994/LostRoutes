@@ -121,10 +121,6 @@ void GamePlayLayer::onEnter()
 		target->setPosition(target->getPosition() + touch->getDelta());
 	};
 
-	// 添加触摸飞机事件监听器
-	EventDispatcher * eventDispatcher = Director::getInstance()->getEventDispatcher();
-	eventDispatcher->addEventListenerWithSceneGraphPriority(touchFighterListener, this->fighter);
-
 	// 注册接触事件监听器
 	contactListener = EventListenerPhysicsContact::create();
 
@@ -134,15 +130,26 @@ void GamePlayLayer::onEnter()
 		auto spriteA = contact.getShapeA()->getBody()->getNode();
 		auto spriteB = contact.getShapeB()->getBody()->getNode();
 
-		////////////////////////////检测 飞机与敌人的接触 start//////////////////////////////////
+		// 飞机与敌人的接触
 		Node * enemy1 = nullptr;
+		
+		if (spriteA->getTag() == GameSceneNodeTagFighter && spriteB->getTag() == GameSceneNodeBatchTagEnemy)
+		{
+			enemy1 = spriteB;
+		}
+		if (spriteA->getTag() == GameSceneNodeBatchTagEnemy && spriteB->getTag() == GameSceneNodeTagFighter)
+		{
+			enemy1 = spriteA;
+		}
+		if (enemy1 != nullptr)	// 发生碰撞
+		{
+			this->handleFighterCollidingWithEnemy((Enemy*)enemy1);
+			return false;
+		}
 
-
-		////////////////////////////检测 飞机与敌人的接触 end//////////////////////////////////
-
-
-		////////////////////////////检测 炮弹与敌人的接触 start////////////////////////////////
+		// 炮弹与敌人的接触
 		Node * enemy2 = nullptr;
+
 		if (spriteA->getTag() == GameSceneNodeBatchTagBullet && spriteB->getTag() == GameSceneNodeBatchTagEnemy)
 		{
 			if (!spriteA->isVisible())
@@ -161,17 +168,18 @@ void GamePlayLayer::onEnter()
 			spriteB->setVisible(false);
 			enemy2 = spriteA;
 		}
-		// 发生碰撞
-		if (enemy2 != nullptr)
+		if (enemy2 != nullptr)	// 发生碰撞
 		{
 			this->handleBulletCollidingWithEnemy((Enemy*)enemy2);
 			return false;
 		}
-		////////////////////////////检测 炮弹与敌人的接触 end////////////////////////////////
 
 		return false;
 	};
 
+	// 添加触摸飞机事件监听器
+	EventDispatcher * eventDispatcher = Director::getInstance()->getEventDispatcher();
+	eventDispatcher->addEventListenerWithSceneGraphPriority(touchFighterListener, this->fighter);
 	// 添加接触事件监听器
 	eventDispatcher->addEventListenerWithFixedPriority(contactListener, 1);
 
@@ -181,6 +189,7 @@ void GamePlayLayer::onEnter()
 	// 设置初始分数
 	this->score = 0;
 	this->scorePlaceholder = 0;
+
 
 }
 
@@ -351,11 +360,59 @@ void GamePlayLayer::handleBulletCollidingWithEnemy(Enemy* enemy)
 		if (scorePlaceholder >= 1000)
 		{
 			fighter->setHitPoints(fighter->getHitPoints() + 1);
+			
 			scorePlaceholder -= 1000;
 		}
 
-
+		
+		// 敌人消失
 		enemy->setVisible(false);
 		enemy->spawn();
+	}
+}
+
+// 处理飞机与敌人碰撞
+void GamePlayLayer::handleFighterCollidingWithEnemy(Enemy* enemy)
+{
+	Size visibleSize = Director::getInstance()->getVisibleSize();
+
+	// 飞机碰撞时的音效和爆炸粒子效果
+	Node * node = this->getChildByTag(GameSceneNodeTagExplosionParticleSystem);
+	if (node)
+	{
+		this->removeChild(node);
+	}
+	ParticleSystem * explosion = ParticleSystemQuad::create("particle/explosion.plist");
+	explosion->setPosition(fighter->getPosition());
+	this->addChild(explosion, 2, GameSceneNodeTagExplosionParticleSystem);
+	if (UserDefault::getInstance()->getBoolForKey(SOUND_KEY))
+	{
+		SimpleAudioEngine::getInstance()->playEffect(sound_2);
+	}
+
+	// 设置敌人消失,重新生成
+	enemy->setVisible(false);
+	enemy->spawn();
+
+	// 玩家生命值减1
+	fighter->setHitPoints(fighter->getHitPoints() - 1);
+	
+
+	// 死亡，游戏结束
+	if (fighter->getHitPoints() <= 0)
+	{
+		log("GameOver");
+
+
+
+
+
+	}
+	else{	// 碰撞未死，重设飞机位置和动作效果
+		fighter->setPosition(Vec2(visibleSize.width / 2, 70));
+		auto ac1 = Show::create();
+		auto ac2 = FadeIn::create(1.0f);
+		auto seq = Sequence::create(ac1, ac2, NULL);
+		fighter->runAction(seq);
 	}
 }

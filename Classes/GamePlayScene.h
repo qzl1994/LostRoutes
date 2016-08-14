@@ -53,13 +53,19 @@ public:
 	void initBG();
 	// 发射炮弹
 	void shootBullet(float dt);
+	// 更新分数
+	void updateStatusBarScore();
+	// 更新生命值
+	void updateStatusBarFighter();
 
 	void menuPauseCallback(cocos2d::Ref* pSender);
 	void menuBackCallback(cocos2d::Ref* pSender);
 	void menuResumeCallback(cocos2d::Ref* pSender);
 
-	//处理炮弹与敌人的碰撞检测
+	// 炮弹与敌人的碰撞检测
 	void handleBulletCollidingWithEnemy(Enemy* enemy);
+	// 飞机与敌人的碰撞检测
+	void handleFighterCollidingWithEnemy(Enemy* enemy);
 
 	CREATE_FUNC(GamePlayLayer);
 };
