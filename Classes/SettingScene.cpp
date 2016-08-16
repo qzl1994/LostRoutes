@@ -40,7 +40,7 @@ bool SettingLayer::init()
 	auto musicOffSprite = Sprite::createWithSpriteFrameName("setting.check-off.png");
 	auto musicOnMenuItem = MenuItemSprite::create(musicOnSprite, NULL);
 	auto musicOffMenuItem = MenuItemSprite::create(musicOffSprite, NULL);
-	auto musicToggleMenuItem = MenuItemToggle::createWithCallback(CC_CALLBACK_1(SettingLayer::menuSoundToggleCallback, this),
+	auto musicToggleMenuItem = MenuItemToggle::createWithCallback(CC_CALLBACK_1(SettingLayer::menuMusicToggleCallback, this),
 		musicOnMenuItem, musicOffMenuItem, NULL);
 
 	auto menu = Menu::create(soundToggleMenuItem, musicToggleMenuItem, NULL);

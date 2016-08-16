@@ -2,6 +2,7 @@
 #define  _APP_DELEGATE_H_
 
 #include "cocos2d.h"
+#include "SystemHeader.h"
 
 class  AppDelegate : private cocos2d::Application
 {
