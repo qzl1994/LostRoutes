@@ -12,6 +12,7 @@
 当玩家生命值降到0后，游戏结束，跳转到游戏结束场景 
 ###游戏结束场景
 ![](https://github.com/qzl1994/LostRoutes/raw/master/readme/GameOverScene.png) <br>
+统计获得的分数并显示出来，再次点击屏幕会重新开始游戏
 
 
 
